@@ -33,6 +33,31 @@ router.get('/simple/get', (req, res) => {
 })
 
 
+router.get('/base/get',  (req, res) => {
+  // res.send(`url: ${req.url}`)
+  res.send(req.query)
+})
+
+router.post('/base/post',  (req, res) => {
+  res.send(req.body)
+})
+
+router.post('/base/buffer',  (req, res) => {
+  const msg = []
+  req.on('data', ((data) => {
+    if (data) {
+      msg.push(data)
+    }
+  }))
+
+  req.on('end', (() => {
+    const buf = Buffer.concat(msg)
+    console.log(buf)
+    res.json(buf.toJSON())
+  }))
+})
+
+
 
 // 将文件 serve 到 port 3000。
 const port = 8080
