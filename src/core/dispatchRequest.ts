@@ -1,5 +1,5 @@
-import { buildData, transformResponse } from '../helpers/data';
-import processHeader from '../helpers/header';
+import { flattenHeaders } from '../helpers/header';
+import transform from '../helpers/transform';
 import buildUrl from '../helpers/url';
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types';
 import xhr from './xhr';
@@ -23,9 +23,9 @@ function processConfig(config: AxiosRequestConfig): void {
   // eslint-disable-next-line no-param-reassign
   config.url = transformURL(config);
   // eslint-disable-next-line no-param-reassign
-  config.headers = transformHeaders(config);
+  config.data = transform(config.data, config.headers, config.transformRequest);
   // eslint-disable-next-line no-param-reassign
-  config.data = transformData(config);
+  config.headers = flattenHeaders(config.headers, config.method!);
 }
 
 /**
@@ -38,27 +38,10 @@ function transformURL(config: AxiosRequestConfig): string {
 }
 
 /**
- * 转换data
- * @param config
- */
-function transformData(config: AxiosRequestConfig): string {
-  return buildData(config.data);
-}
-
-/**
- * 转换headers
- * @param config
- */
-function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers = {}, data } = config;
-  return processHeader(headers, data);
-}
-
-/**
  * 转换响应的data
  * @param res
  */
 function transformResponseData(res: AxiosResponse): AxiosResponse {
-  res.data = transformResponse(res.data);
+  res.data = transform(res.data, res.headers, res.config.transformResponse);
   return res;
 }

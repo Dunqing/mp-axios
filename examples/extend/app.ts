@@ -1,7 +1,21 @@
 import axios from '../../src/index'
 
-axios({
+interface ApiResponseData {
+  method: 'post',
+  data: 'request'
+}
+
+axios<ApiResponseData>({
   url: '/extends/request',
+  method: 'post',
+  data: {
+    method: 'post',
+    desc: 'request'
+  }
+}).then(res => {
+  console.log(res)
+})
+axios('/extends/request', {
   method: 'post',
   data: {
     method: 'post',

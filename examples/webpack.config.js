@@ -4,7 +4,6 @@ const webpack = require('webpack')
 
 module.exports = {
   mode: 'development',
-
   /**
    * 遍历当前路径下所有文件夹，将文件夹中的 app.ts 文件作为入口文件
    */

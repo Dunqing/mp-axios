@@ -1,6 +1,6 @@
 import { isObject } from './util';
 
-export function buildData(data?: any): any {
+export function transformRequest(data?: any): any {
   if (isObject(data)) {
     return JSON.stringify(data);
   }
