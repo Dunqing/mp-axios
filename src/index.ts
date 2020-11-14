@@ -1,25 +1,5 @@
-import { AxiosRequestConfig } from './types/index'
-import xhr from './xhr'
-import buildUrl from './helpers/url'
-import { buildData } from './helpers/data'
+import axios from './axios';
 
-function axios(config: AxiosRequestConfig) {
-  processConfig(config)
-  xhr(config)
-}
+export * from './types/index';
 
-function processConfig(config: AxiosRequestConfig): void {
-  config.url = transformURL(config)
-  config.data = transformData(config)
-}
-
-function transformURL(config: AxiosRequestConfig): string {
-  const { url, params } = config
-  return buildUrl(url, params)
-}
-
-function transformData(config: AxiosRequestConfig): string {
-  return buildData(config.data)
-}
-
-export default axios
+export default axios;

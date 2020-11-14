@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const webpack = require('webpack');
+const fs = require('fs')
+const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'development',
@@ -9,19 +9,24 @@ module.exports = {
    * 遍历当前路径下所有文件夹，将文件夹中的 app.ts 文件作为入口文件
    */
   entry: fs.readdirSync(__dirname).reduce((entries, dir) => {
-    const fullDir = path.join(__dirname, dir);
+    const fullDir = path.join(__dirname, dir)
+
+    // 文件夹名前_为需要排除的
+    if (dir.startsWith('_')) {
+      return entries
+    }
 
     // 判断是否是文件夹
     if (fs.statSync(fullDir).isDirectory()) {
-      const entry = path.join(fullDir, 'app.ts');
+      const entry = path.join(fullDir, 'app.ts')
 
       // 判断 app.ts 文件是否存在
       if (fs.existsSync(entry)) {
-        entries[dir] = ['webpack-hot-middleware/client', entry];
+        entries[dir] = ['webpack-hot-middleware/client', entry]
       }
     }
 
-    return entries;
+    return entries
   }, {}),
 
   output: {
@@ -47,16 +52,14 @@ module.exports = {
           {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true,
+              transpileOnly: true
             }
           }
         ]
       },
       {
         test: /\.css?$/,
-        use: [
-          'style-loader', 'css-loader'
-        ]
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -65,8 +68,5 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js']
   },
 
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-  ]
-};
+  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.NoEmitOnErrorsPlugin()]
+}
