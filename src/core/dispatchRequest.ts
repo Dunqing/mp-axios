@@ -1,18 +1,20 @@
-import { flattenHeaders } from '../helpers/header';
-import transform from '../helpers/transform';
-import buildUrl from '../helpers/url';
-import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types';
-import xhr from './xhr';
+import { flattenHeaders } from '../helpers/header'
+import transform from '../helpers/transform'
+import buildUrl from '../helpers/url'
+import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
+import xhr from './xhr'
 
 /**
  * 触发请求
  * @param config
  */
-export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
-  processConfig(config);
+export default function dispatchRequest(
+  config: AxiosRequestConfig
+): AxiosPromise {
+  processConfig(config)
   return xhr(config).then(res => {
-    return transformResponseData(res);
-  });
+    return transformResponseData(res)
+  })
 }
 
 /**
@@ -21,11 +23,11 @@ export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromis
  */
 function processConfig(config: AxiosRequestConfig): void {
   // eslint-disable-next-line no-param-reassign
-  config.url = transformURL(config);
+  config.url = transformURL(config)
   // eslint-disable-next-line no-param-reassign
-  config.data = transform(config.data, config.headers, config.transformRequest);
+  config.data = transform(config.data, config.headers, config.transformRequest)
   // eslint-disable-next-line no-param-reassign
-  config.headers = flattenHeaders(config.headers, config.method!);
+  config.headers = flattenHeaders(config.headers, config.method!)
 }
 
 /**
@@ -33,8 +35,8 @@ function processConfig(config: AxiosRequestConfig): void {
  * @param config
  */
 function transformURL(config: AxiosRequestConfig): string {
-  const { url, params } = config;
-  return buildUrl(url!, params);
+  const { url, params } = config
+  return buildUrl(url!, params)
 }
 
 /**
@@ -42,6 +44,6 @@ function transformURL(config: AxiosRequestConfig): string {
  * @param res
  */
 function transformResponseData(res: AxiosResponse): AxiosResponse {
-  res.data = transform(res.data, res.headers, res.config.transformResponse);
-  return res;
+  res.data = transform(res.data, res.headers, res.config.transformResponse)
+  return res
 }

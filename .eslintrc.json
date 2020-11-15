@@ -3,8 +3,17 @@
     "es6": true,
     "node": true
   },
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "prettier",
+    // "standard",
+    "@typescript-eslint"
+  ],
   "extends": [
-    "eslint-config-ali/typescript"
+    "prettier",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint",
+    "prettier/standard"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -15,6 +24,31 @@
     "ecmaVersion": 11,
     "sourceType": "module"
   },
-  "plugins": [
-  ]
+  "rules": {
+    "prettier/prettier": [
+      2,
+      {
+        "printWidth": 80,
+        "semi": false,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "parser": "typescript"
+      }
+    ],
+    "max-len": [
+      2,
+      {
+        "code": 80,
+        "ignoreUrls": true
+      }
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": false
+      }
+    ]
+  }
 }

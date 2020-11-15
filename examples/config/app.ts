@@ -1,17 +1,17 @@
-import qs from 'qs';
-import Axios from '../../src/index';
+import qs from 'qs'
+import Axios from '../../src/index'
 
 const axios = Axios.create({
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/x-www-form-urlencoded'
   },
   transformRequest: [
     function custom(data, headers) {
-      console.log('data, headers: ', data, headers);
+      console.log('data, headers: ', data, headers)
       if (typeof data === 'object') {
         data.transform = true
       } else if (headers['Content-Type'].indexOf('x-www-form-urlencoded') !== -1) {
-        data = qs.stringify(JSON.parse(data));
+        data = qs.stringify(JSON.parse(data))
       }
       return data
     }
@@ -73,6 +73,6 @@ axios({
     c: [1, 2, 3],
     d: { a: 1, b: 2, c: [1, 2, 3] }
   }
-}).then((res) => {
+}).then(res => {
   console.log('res', res)
 })

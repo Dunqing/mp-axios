@@ -1,18 +1,22 @@
-import { isArray } from 'util';
-import { AxiosTransform } from '../types/index';
+import { isArray } from 'util'
+import { AxiosTransform } from '../types/index'
 
-export default function transform(data: any, headers: any, fns: AxiosTransform | AxiosTransform[]) {
+export default function transform(
+  data: any,
+  headers: any,
+  fns: AxiosTransform | AxiosTransform[]
+) {
   if (!fns) {
-    return data;
+    return data
   }
 
   if (!isArray(fns)) {
-    fns = [fns];
+    fns = [fns]
   }
 
-  fns.forEach((fn) => {
-    data = fn(data, headers);
-  });
+  fns.forEach(fn => {
+    data = fn(data, headers)
+  })
 
-  return data;
+  return data
 }
