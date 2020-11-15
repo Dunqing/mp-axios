@@ -1,8 +1,4 @@
-import {
-  AxiosInterceptorsManager,
-  RejectedFn,
-  ResolvedFn,
-} from '../types/index'
+import { AxiosInterceptorsManager, RejectedFn, ResolvedFn } from '../types'
 
 interface Interceptor<T> {
   resolved: ResolvedFn<T>
@@ -25,14 +21,14 @@ export class InterceptorManager<T> implements AxiosInterceptorsManager<T> {
 
   forEach(fn: (interceptor: Interceptor<T>) => void): void {
     this.interceptors.forEach(interceptor => {
-      if (interceptor) {
+      if (interceptor !== null) {
         fn(interceptor)
       }
     })
   }
 
   eject(id: number): boolean {
-    if (this.interceptors[id]) {
+    if (this.interceptors[id] !== null) {
       this.interceptors[id] = null
       return true
     }

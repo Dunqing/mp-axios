@@ -8,13 +8,12 @@ import xhr from './xhr'
  * 触发请求
  * @param config
  */
-export default function dispatchRequest(
+export default async function dispatchRequest(
   config: AxiosRequestConfig
 ): AxiosPromise {
   processConfig(config)
-  return xhr(config).then(res => {
-    return transformResponseData(res)
-  })
+  const res = await xhr(config)
+  return transformResponseData(res)
 }
 
 /**

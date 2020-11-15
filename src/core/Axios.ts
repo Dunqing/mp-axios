@@ -32,9 +32,9 @@ export default class Axios {
     }
   }
 
-  request(url: string, config?: AxiosRequestConfig): AxiosPromise {
+  async request(url: string, config?: AxiosRequestConfig): AxiosPromise {
     if (typeof url === 'string') {
-      if (!config) {
+      if (typeof config === 'undefined') {
         config = {}
       }
       config.url = url
@@ -61,7 +61,7 @@ export default class Axios {
       chain.push(interceptor)
     })
 
-    while (chain.length) {
+    while (chain.length > 0) {
       const { resolved, rejected } = chain.shift()!
       promise = promise.then(resolved, rejected)
     }
@@ -69,49 +69,76 @@ export default class Axios {
     return promise as AxiosPromise
   }
 
-  get(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithoutData(url, RequestMethod.get, config)
-  }
-  post(url: string, data: any, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithData(url, RequestMethod.post, data, config)
-  }
-  options(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithoutData(url, RequestMethod.options, config)
-  }
-  put(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithoutData(url, RequestMethod.put, config)
-  }
-  patch(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithoutData(url, RequestMethod.patch, config)
-  }
-  head(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithoutData(url, RequestMethod.head, config)
-  }
-  delete(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithoutData(url, RequestMethod.delete, config)
+  async get(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return await this._requestMethodWithoutData(url, RequestMethod.get, config)
   }
 
-  private _requestMethodWithoutData(
+  async post(
+    url: string,
+    data: any,
+    config?: AxiosRequestConfig
+  ): AxiosPromise {
+    return await this._requestMethodWithData(
+      url,
+      RequestMethod.post,
+      data,
+      config
+    )
+  }
+
+  async options(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return await this._requestMethodWithoutData(
+      url,
+      RequestMethod.options,
+      config
+    )
+  }
+
+  async put(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return await this._requestMethodWithoutData(url, RequestMethod.put, config)
+  }
+
+  async patch(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return await this._requestMethodWithoutData(
+      url,
+      RequestMethod.patch,
+      config
+    )
+  }
+
+  async head(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return await this._requestMethodWithoutData(url, RequestMethod.head, config)
+  }
+
+  async delete(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return await this._requestMethodWithoutData(
+      url,
+      RequestMethod.delete,
+      config
+    )
+  }
+
+  private async _requestMethodWithoutData(
     url: string,
     method: RequestMethod,
     config?: AxiosRequestConfig
   ): AxiosPromise {
-    return this.request(
-      Object.assign(config || {}, {
+    return await this.request(
+      Object.assign(config ?? {}, {
         method,
         url,
       })
     )
   }
 
-  private _requestMethodWithData(
+  private async _requestMethodWithData(
     url: string,
     method: RequestMethod,
     data: any,
     config?: AxiosRequestConfig
   ): AxiosPromise {
-    return this.request(
-      Object.assign(config || {}, {
+    return await this.request(
+      Object.assign(config ?? {}, {
         data,
         method,
         url,

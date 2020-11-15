@@ -6,11 +6,11 @@
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "prettier",
-    // "standard",
     "@typescript-eslint"
   ],
   "extends": [
     "prettier",
+    "standard-with-typescript",
     "plugin:prettier/recommended",
     "prettier/@typescript-eslint",
     "prettier/standard"
@@ -25,6 +25,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "@typescript-eslint/no-non-null-assertion": 0,
     "prettier/prettier": [
       2,
       {

@@ -1,16 +1,15 @@
-import { isArray } from 'util'
 import { AxiosTransform } from '../types/index'
 
 export default function transform(
   data: any,
   headers: any,
   fns: AxiosTransform | AxiosTransform[]
-) {
-  if (!fns) {
+): any {
+  if (typeof fns === 'undefined') {
     return data
   }
 
-  if (!isArray(fns)) {
+  if (!Array.isArray(fns)) {
     fns = [fns]
   }
 

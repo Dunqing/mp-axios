@@ -20,7 +20,7 @@ export function createError(
   request?: any,
   response?: AxiosResponse,
   isAxiosError?: boolean
-) {
+): AxiosError {
   const error = new AxiosError(
     config,
     isAxiosError,

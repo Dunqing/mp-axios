@@ -12,7 +12,7 @@ function encode(val: string): string {
 }
 
 export default function buildUrl(url: string, params?: any): string {
-  if (!params) {
+  if (typeof params === 'undefined') {
     return url
   }
   const parts: string[] = []
@@ -41,12 +41,12 @@ export default function buildUrl(url: string, params?: any): string {
   })
 
   const serializedParams = parts.join('&')
-  if (serializedParams) {
+  if (typeof serializedParams === 'string') {
     const markIndex = url.indexOf('#')
     if (markIndex !== -1) {
       url = url.slice(0, markIndex)
     }
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams
+    url += (!url.includes('?') ? '?' : '&') + serializedParams
   }
   return url
 }

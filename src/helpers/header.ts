@@ -1,8 +1,8 @@
 import { Method } from '../types'
 import { deepMerge, isObject } from './util'
 
-function normalizeHeaderName(headers: any, normalizedName: string) {
-  if (!headers) {
+function normalizeHeaderName(headers: any, normalizedName: string): void {
+  if (typeof headers === 'undefined') {
     return
   }
   Object.keys(headers).forEach(name => {
@@ -11,24 +11,27 @@ function normalizeHeaderName(headers: any, normalizedName: string) {
       normalizedName.toUpperCase() === name.toUpperCase()
     ) {
       headers[normalizedName] = headers[name]
-      delete headers[name]
+      Reflect.deleteProperty(headers, name)
     }
   })
 }
 
-export default function processHeader(headers: any, data: any) {
+export default function processHeader(headers: any, data: any): any {
   normalizeHeaderName(headers, 'Content-Type')
   if (isObject(data)) {
-    if (headers && !headers['Content-Type']) {
+    if (
+      typeof headers !== 'undefined' &&
+      typeof headers['Content-Type'] === 'string'
+    ) {
       headers['Content-Type'] = 'application/json;charset=utf-8'
     }
   }
   return headers
 }
 
-export function parseHeaders(headers?: string) {
+export function parseHeaders(headers?: string): any {
   const parsed = Object.create(null)
-  if (!headers) {
+  if (typeof headers === 'undefined') {
     return parsed
   }
 
@@ -36,10 +39,10 @@ export function parseHeaders(headers?: string) {
     let [key, val] = line.split(':')
     key = key.trim().toLowerCase()
 
-    if (!key) {
+    if (key !== '') {
       return
     }
-    if (val) {
+    if (val !== '') {
       val = val.trim()
     }
     parsed[key] = val
@@ -49,7 +52,7 @@ export function parseHeaders(headers?: string) {
 }
 
 export function flattenHeaders(headers: any, method: Method): any {
-  if (!headers) {
+  if (typeof headers === 'undefined') {
     return headers
   }
 
@@ -66,7 +69,7 @@ export function flattenHeaders(headers: any, method: Method): any {
   ]
 
   headersDeleteKeys.forEach(key => {
-    delete headers[key]
+    Reflect.deleteProperty(headers, key)
   })
 
   return headers

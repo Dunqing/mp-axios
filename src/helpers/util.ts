@@ -1,7 +1,3 @@
-import { isArray } from 'util'
-
-const { toString } = Object.prototype
-
 export function isDate(val: any): val is Date {
   return toString.call(val) === '[object Date]'
 }
@@ -17,7 +13,7 @@ export function extend<T, U>(to: T, from: U): T & U {
   return to as T & U
 }
 
-export function deepMerge(...rest: any[]) {
+export function deepMerge(...rest: any[]): any {
   const result: any = {}
   rest.forEach(obj => {
     Object.keys(obj).forEach(key => {
@@ -29,8 +25,8 @@ export function deepMerge(...rest: any[]) {
         } else {
           result[key] = deepMerge(current)
         }
-      } else if (isArray(current)) {
-        if (isArray(result[key])) {
+      } else if (Array.isArray(current)) {
+        if (Array.isArray(result[key])) {
           result[key] = result[key].concat(current)
         } else {
           result[key] = current

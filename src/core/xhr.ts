@@ -2,21 +2,21 @@ import { createError } from '../helpers/error'
 import { parseHeaders } from '../helpers/header'
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types/index'
 
-export default function xhr(config: AxiosRequestConfig): AxiosPromise {
-  return new Promise((resolve, reject) => {
+export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
+  return await new Promise((resolve, reject) => {
     const { url, method = 'get', data = null, headers, timeout } = config
     const request = new XMLHttpRequest()
     request.open(method.toUpperCase(), url!, true)
 
     Object.keys(headers).forEach(name => {
       if (data === null && name.toLowerCase() === 'content-type') {
-        delete headers[name]
+        Reflect.deleteProperty(headers, name)
       } else {
         request.setRequestHeader(name, headers[name])
       }
     })
 
-    function handleResponse(response: AxiosResponse) {
+    function handleResponse(response: AxiosResponse): void {
       const { status } = response
       if (status >= 200 && status <= 300) {
         resolve(response)
@@ -25,18 +25,18 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       }
     }
 
-    if (config.responseType) {
+    if (typeof config.responseType === 'string') {
       request.responseType = config.responseType
     }
 
-    if (timeout) {
+    if (typeof timeout === 'number') {
       request.timeout = timeout
     }
 
     request.ontimeout = function() {
       reject(
         createError(
-          `Timeout of ${timeout} ms exceeded`,
+          `Timeout of ${timeout!} ms exceeded`,
           config,
           'ECONNABORTED',
           request

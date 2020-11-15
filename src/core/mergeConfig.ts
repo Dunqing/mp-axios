@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-import { isArray, isObject } from 'util'
-import { deepMerge } from '../helpers/util'
+import { deepMerge, isObject } from '../helpers/util'
 import { AxiosRequestConfig } from '../types'
 
 interface StrategyMap {
@@ -32,9 +31,9 @@ function deepMergeStrategy(val1: any, val2: any): any {
 }
 
 function transformStrategy(val1: any, val2: any): any {
-  if (isArray(val2)) {
+  if (Array.isArray(val2)) {
     return val1.concat(val2)
-  } else if (val2) {
+  } else if (typeof val2 !== 'undefined') {
     val1.push(val2)
     return val1
   }
@@ -62,12 +61,12 @@ export default function mergeConfig(
 ): AxiosRequestConfig {
   const config = Object.create(null)
   const mergeField = (key: string): void => {
-    const strategy = strategyMap[key] || defaultStrategy
-    config[key] = strategy(config1[key], config2![key])
+    const strategy = strategyMap[key] ?? defaultStrategy
+    config[key] = strategy(config1[key], config2[key])
   }
 
   for (const key in config2) {
-    if (config2[key]) {
+    if (typeof config2[key] !== 'undefined') {
       mergeField(key)
     }
   }
@@ -78,5 +77,5 @@ export default function mergeConfig(
     }
   }
 
-  return config!
+  return config
 }

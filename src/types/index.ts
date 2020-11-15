@@ -17,9 +17,7 @@ export enum RequestMethod {
 }
 export type Method = keyof typeof RequestMethod
 
-export interface AxiosTransform {
-  (data: any, headers?: any): any
-}
+export type AxiosTransform = (data: any, headers?: any) => any
 
 export interface AxiosRequestConfig {
   url?: string
@@ -94,12 +92,8 @@ export interface Axios {
   ) => AxiosPromise<T>
 }
 
-export interface RejectedFn {
-  (error: any): any
-}
-export interface ResolvedFn<T> {
-  (val: T): T | Promise<T>
-}
+export type RejectedFn = (error: any) => any
+export type ResolvedFn<T> = (val: T) => T | Promise<T>
 
 export interface AxiosInterceptorsManager<T> {
   use: (resolved: ResolvedFn<T>, rejected?: RejectedFn) => number
