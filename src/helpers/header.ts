@@ -56,7 +56,11 @@ export function flattenHeaders(headers: any, method: Method): any {
     return headers
   }
 
-  headers = deepMerge(headers.common, headers[method], headers)
+  headers = deepMerge(
+    headers.common,
+    headers[method.toLocaleLowerCase()],
+    headers
+  )
   const headersDeleteKeys = [
     'get',
     'post',
