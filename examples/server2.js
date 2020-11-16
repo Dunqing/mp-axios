@@ -19,7 +19,7 @@ const cors = {
 
 router.post('/credentials/cors', (req, res) => {
   res.set(cors)
-  res.json(req.cookie)
+  res.json(req.cookies)
 })
 
 router.options('/credentials/cors', (req, res) => {
