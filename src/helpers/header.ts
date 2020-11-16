@@ -39,10 +39,10 @@ export function parseHeaders(headers?: string): any {
     let [key, val] = line.split(':')
     key = key.trim().toLowerCase()
 
-    if (key !== '') {
+    if (key === '') {
       return
     }
-    if (val !== '') {
+    if (typeof val !== 'undefined') {
       val = val.trim()
     }
     parsed[key] = val
@@ -65,7 +65,7 @@ export function flattenHeaders(headers: any, method: Method): any {
     'put',
     'patch',
     'delete',
-    'common',
+    'common'
   ]
 
   headersDeleteKeys.forEach(key => {

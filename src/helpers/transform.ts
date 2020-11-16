@@ -1,4 +1,4 @@
-import { AxiosTransform } from '../types/index'
+import { AxiosTransform } from '../types'
 
 export default function transform(
   data: any,

@@ -14,7 +14,7 @@ export class InterceptorManager<T> implements AxiosInterceptorsManager<T> {
   use(resolved: ResolvedFn<T>, rejected?: RejectedFn | undefined): number {
     this.interceptors.push({
       resolved,
-      rejected,
+      rejected
     })
     return this.interceptors.length
   }

@@ -2,8 +2,12 @@ const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 
+console.log(path.resolve(__dirname, '../'))
+
 module.exports = {
   mode: 'development',
+  devtool: 'inline-source-map',
+  context: path.resolve(__dirname, '../'),
   /**
    * 遍历当前路径下所有文件夹，将文件夹中的 app.ts 文件作为入口文件
    */
@@ -37,24 +41,22 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        enforce: 'pre',
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
         use: [
-          {
-            loader: 'tslint-loader'
-          }
-        ]
-      },
-      {
-        test: /\.tsx?$/,
-        use: [
+          'babel-loader',
           {
             loader: 'ts-loader',
             options: {
               transpileOnly: true
             }
-          }
+          },
         ]
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
       },
       {
         test: /\.css?$/,

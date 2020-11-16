@@ -1,3 +1,6 @@
+import Cancel from '../cancel/Cancel'
+import { CancelTokenInstance, CancelTokenStatic } from './CancelToken'
+
 // eslint-disable-next-line no-shadow
 export enum RequestMethod {
   GET = 'GET',
@@ -13,7 +16,7 @@ export enum RequestMethod {
   HEAD = 'HEAD',
   head = 'head',
   patch = 'patch',
-  PATCH = 'PATCH',
+  PATCH = 'PATCH'
 }
 export type Method = keyof typeof RequestMethod
 
@@ -27,8 +30,10 @@ export interface AxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  withCredentials?: boolean
   transformRequest?: AxiosTransform | AxiosTransform[]
   transformResponse?: AxiosTransform | AxiosTransform[]
+  CancelToken?: CancelTokenInstance
   [propName: string]: any
 }
 
@@ -106,5 +111,8 @@ export interface AxiosInstance extends Axios {
 }
 
 export interface AxiosStatic extends AxiosInstance {
+  CancelToken: CancelTokenStatic
+  Cancel: Cancel
+  isCancel: (value: any) => boolean
   create: (config?: AxiosRequestConfig) => AxiosInstance
 }

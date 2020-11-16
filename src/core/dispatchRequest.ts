@@ -11,6 +11,8 @@ import xhr from './xhr'
 export default async function dispatchRequest(
   config: AxiosRequestConfig
 ): AxiosPromise {
+  throwIfCancellationRequested(config)
+
   processConfig(config)
   const res = await xhr(config)
   return transformResponseData(res)
@@ -24,7 +26,11 @@ function processConfig(config: AxiosRequestConfig): void {
   // eslint-disable-next-line no-param-reassign
   config.url = transformURL(config)
   // eslint-disable-next-line no-param-reassign
-  config.data = transform(config.data, config.headers, config.transformRequest)
+  config.data = transform(
+    config.data,
+    config.headers,
+    config.transformRequest ?? []
+  )
   // eslint-disable-next-line no-param-reassign
   config.headers = flattenHeaders(config.headers, config.method!)
 }
@@ -43,6 +49,16 @@ function transformURL(config: AxiosRequestConfig): string {
  * @param res
  */
 function transformResponseData(res: AxiosResponse): AxiosResponse {
-  res.data = transform(res.data, res.headers, res.config.transformResponse)
+  res.data = transform(
+    res.data,
+    res.headers,
+    res.config.transformResponse ?? []
+  )
   return res
+}
+
+function throwIfCancellationRequested(config: AxiosRequestConfig): void {
+  if (typeof config.CancelToken !== 'undefined') {
+    config.CancelToken.throwIfRequested()
+  }
 }

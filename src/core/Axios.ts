@@ -4,8 +4,8 @@ import {
   AxiosResponse,
   RejectedFn,
   RequestMethod,
-  ResolvedFn,
-} from '../types/index'
+  ResolvedFn
+} from '../types'
 import { InterceptorManager } from './AxiosInterceptor'
 import dispatchRequest from './dispatchRequest'
 import mergeConfig from './mergeConfig'
@@ -28,7 +28,7 @@ export default class Axios {
     this.defaults = config
     this.interceptors = {
       request: new InterceptorManager<AxiosRequestConfig>(),
-      response: new InterceptorManager<AxiosResponse>(),
+      response: new InterceptorManager<AxiosResponse>()
     }
   }
 
@@ -47,8 +47,8 @@ export default class Axios {
     const chain: Array<PromiseChain<any>> = [
       {
         resolved: dispatchRequest,
-        rejected: undefined,
-      },
+        rejected: undefined
+      }
     ]
 
     let promise = Promise.resolve(config)
@@ -126,7 +126,7 @@ export default class Axios {
     return await this.request(
       Object.assign(config ?? {}, {
         method,
-        url,
+        url
       })
     )
   }
@@ -141,7 +141,7 @@ export default class Axios {
       Object.assign(config ?? {}, {
         data,
         method,
-        url,
+        url
       })
     )
   }

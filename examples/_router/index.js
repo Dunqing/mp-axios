@@ -7,5 +7,6 @@ require('./router/error')(router)
 require('./router/extends')(router)
 require('./router/interceptor')(router)
 require('./router/config')(router)
+require('./router/cancel')(router)
 
 module.exports = router
