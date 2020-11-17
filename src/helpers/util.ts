@@ -6,8 +6,17 @@ export function isObject(val: any): val is Object {
   return toString.call(val) === '[object Object]'
 }
 
+export function isFormData(val: any): val is FormData {
+  return val !== 'undefined' && val instanceof FormData
+}
+
+export function isFunction(val: any): val is Function {
+  return toString.call(val) === '[object Function]'
+}
+
 export function extend<T, U>(to: T, from: U): T & U {
   for (const key in from) {
+    console.log('key: ', key)
     ;(to as T & U)[key] = from[key] as any
   }
   return to as T & U

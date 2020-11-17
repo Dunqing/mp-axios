@@ -30,15 +30,15 @@ function deepMergeStrategy(val1: any, val2: any): any {
   }
 }
 
-function transformStrategy(val1: any, val2: any): any {
-  if (Array.isArray(val2)) {
-    return val1.concat(val2)
-  } else if (typeof val2 !== 'undefined') {
-    val1.push(val2)
-    return val1
-  }
-  return val1
-}
+// function transformStrategy(val1: any, val2: any): any {
+//   if (Array.isArray(val2)) {
+//     return val1.concat(val2)
+//   } else if (typeof val2 !== 'undefined') {
+//     val1.push(val2)
+//     return val1
+//   }
+//   return val1
+// }
 
 const StrategyKeys = ['data', 'params', 'url']
 StrategyKeys.forEach(key => {
@@ -50,10 +50,10 @@ StrategyKeysDeepMerge.forEach(key => {
   strategyMap[key] = deepMergeStrategy
 })
 
-const StrategyKeysTransform = ['transformRequest', 'transformResponse']
-StrategyKeysTransform.forEach(key => {
-  strategyMap[key] = transformStrategy
-})
+// const StrategyKeysTransform = ['transformRequest', 'transformResponse']
+// StrategyKeysTransform.forEach(key => {
+//   strategyMap[key] = transformStrategy
+// })
 
 export default function mergeConfig(
   config1: AxiosRequestConfig,

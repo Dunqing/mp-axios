@@ -1,7 +1,11 @@
+import { read } from '../helpers/cookie'
 import { createError } from '../helpers/error'
 import { parseHeaders } from '../helpers/header'
+import isUrlSameOrigin from '../helpers/isUrlSameOrigin'
+import { isFormData, isFunction } from '../helpers/util'
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
 import { CancelInstance } from '../types/CancelToken'
+import settled from './settled'
 
 export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
   return await new Promise((resolve, reject) => {
@@ -12,32 +16,36 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
       headers,
       timeout,
       CancelToken,
-      withCredentials
+      withCredentials,
+      xsrfHeaderName,
+      xsrfCookieName
     } = config
 
     let request: XMLHttpRequest | null = new XMLHttpRequest()
     request.open(method.toUpperCase(), url!, true)
 
+    // csrf must
+    const xsrfValue =
+      typeof withCredentials === 'boolean' ||
+      (isUrlSameOrigin(url!) && typeof xsrfCookieName !== 'undefined')
+        ? read(xsrfCookieName ?? '')
+        : null
+
+    // add xsrf-token header
+    if (typeof xsrfValue === 'string') {
+      headers[xsrfHeaderName ?? ''] = xsrfValue
+    }
+
     Object.keys(headers).forEach(name => {
-      if (data === null && name.toLowerCase() === 'content-type') {
+      if (
+        name.toLowerCase() === 'content-type' &&
+        (isFormData(data) || data === null)
+      ) {
         Reflect.deleteProperty(headers, name)
       } else {
         request!.setRequestHeader(name, headers[name])
       }
     })
-
-    function handleResponse(response: AxiosResponse): void {
-      const { status } = response
-      if (request === null) {
-        return
-      }
-      if (status >= 200 && status <= 300) {
-        resolve(response)
-      } else {
-        reject(createError(`request fail with status code ${status}`, config))
-      }
-      request = null
-    }
 
     if (typeof config.responseType === 'string') {
       request.responseType = config.responseType
@@ -65,6 +73,17 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
           reject(err)
           request = null
         })
+    }
+
+    if (isFunction(config.onDownloadProgress)) {
+      request.addEventListener('progress', config.onDownloadProgress)
+    }
+
+    if (
+      isFunction(config.onUploadProgress) &&
+      request?.upload?.addEventListener instanceof XMLHttpRequestUpload
+    ) {
+      request.upload.addEventListener('progress', config.onUploadProgress)
     }
 
     request.ontimeout = function() {
@@ -120,14 +139,15 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
         data:
           config.responseType === 'text'
             ? request.responseText
-            : 'request.response',
+            : request.response,
         status: request.status,
         statusText: request.statusText,
         config,
         headers: responseHeaders,
         request
       }
-      handleResponse(response)
+
+      settled(resolve, reject, response)
     }
     request.send(data)
   })

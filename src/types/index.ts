@@ -31,6 +31,13 @@ export interface AxiosRequestConfig {
   responseType?: XMLHttpRequestResponseType
   timeout?: number
   withCredentials?: boolean
+  xsrfHeaderName?: string
+  xsrfCookieName?: string
+  // 监听下载
+  onDownloadProgress?: (e: ProgressEvent) => void
+  // 监听上传
+  onUploadProgress?: (e: ProgressEvent) => void
+  validateStatus?: (status: number) => boolean
   transformRequest?: AxiosTransform | AxiosTransform[]
   transformResponse?: AxiosTransform | AxiosTransform[]
   CancelToken?: CancelTokenInstance

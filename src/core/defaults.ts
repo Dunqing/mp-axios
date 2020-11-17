@@ -4,12 +4,17 @@ import { AxiosRequestConfig } from '../types'
 
 const config: AxiosRequestConfig = {
   timeout: 3000,
+  xsrfCookieName: 'X-TOKEN',
+  xsrfHeaderName: 'X-TOKEN',
   transformRequest: [
     function(data: any, headers: any) {
       processHeader(headers, data)
       return transformRequest(data)
     }
   ],
+  validateStatus(status: number) {
+    return status >= 200 && status <= 300
+  },
   transformResponse: [
     function(data: any) {
       return transformResponse(data)
