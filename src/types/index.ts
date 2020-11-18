@@ -72,21 +72,13 @@ export interface Axios {
   defaults: AxiosRequestConfig
   interceptors: AxiosInterceptors
   request: <T = any>(config: AxiosRequestConfig) => AxiosPromise<T>
-  get: <T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ) => AxiosPromise<T>
+  get: <T = any>(url: string, config?: AxiosRequestConfig) => AxiosPromise<T>
   put: <T = any>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
   ) => AxiosPromise<T>
-  delete: <T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ) => AxiosPromise<T>
+  delete: <T = any>(url: string, config?: AxiosRequestConfig) => AxiosPromise<T>
   patch: <T = any>(
     url: string,
     data?: any,

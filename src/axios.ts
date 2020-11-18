@@ -9,6 +9,7 @@ import { AxiosRequestConfig, AxiosStatic } from './types'
 function createInstance(config: AxiosRequestConfig): AxiosStatic {
   const context = new Axios(config)
   const instance = Axios.prototype.request.bind(context)
+  extend(instance, Axios.prototype, context)
   extend(instance, context)
   return instance as AxiosStatic
 }

@@ -70,6 +70,7 @@ export default class Axios {
   }
 
   async get(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    console.log(config, 'hello')
     return await this._requestMethodWithoutData(url, RequestMethod.get, config)
   }
 

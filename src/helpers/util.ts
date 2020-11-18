@@ -14,11 +14,27 @@ export function isFunction(val: any): val is Function {
   return toString.call(val) === '[object Function]'
 }
 
-export function extend<T, U>(to: T, from: U): T & U {
-  for (const key in from) {
-    console.log('key: ', key)
-    ;(to as T & U)[key] = from[key] as any
-  }
+export function extend<T extends Object, U extends Object>(
+  to: T,
+  from: U,
+  thisArg?: any
+): T & U {
+  Object.getOwnPropertyNames(from).forEach(key => {
+    if (typeof (to as { [key: string]: any })[key] !== 'undefined') {
+      return
+    }
+    if (typeof thisArg !== 'undefined') {
+      ;(to as { [key: string]: any })[key] = isFunction(
+        (from as { [key: string]: any })[key]
+      )
+        ? (from as { [key: string]: any })[key].bind(thisArg)
+        : (from as { [key: string]: any })[key]
+    } else {
+      ;(to as { [key: string]: any })[key] = (from as { [key: string]: any })[
+        key
+      ]
+    }
+  })
   return to as T & U
 }
 

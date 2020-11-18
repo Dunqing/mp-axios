@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const router = require('./_router/index')
 
 const app = express()
+const path = require('path')
 const config = require('./webpack.config.js')
 const compiler = webpack(config)
 
@@ -28,6 +29,8 @@ app.use(webpackHotMiddleware(compiler, {}))
 app.use(cookieParser())
 
 app.use(express.static(__dirname))
+console.log('path.join(__dirnam ', path.join(__dirname, '../uploads'));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 

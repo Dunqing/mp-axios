@@ -21,6 +21,8 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
       xsrfCookieName
     } = config
 
+    console.log(config)
+
     let request: XMLHttpRequest | null = new XMLHttpRequest()
     request.open(method.toUpperCase(), url!, true)
 
