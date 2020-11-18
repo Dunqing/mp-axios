@@ -83,9 +83,10 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     if (
       isFunction(config.onUploadProgress) &&
-      request?.upload?.addEventListener instanceof XMLHttpRequestUpload
+      isFunction(request.upload.addEventListener)
     ) {
       request.upload.addEventListener('progress', config.onUploadProgress)
+      // request.upload.onprogress = config.onUploadProgress
     }
 
     request.ontimeout = function() {
