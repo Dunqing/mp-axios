@@ -32,12 +32,17 @@ axios({
 axios({
   url: '/more/validate-status',
   method: 'get',
+  auth: {
+    username: 'dengqing',
+    password: '123456'
+  },
   validateStatus(status) {
     return status !== 200
   }
 }).catch(err => {
   console.log(err, 'validate status')
 })
+
 
 function calculationProgress(e: ProgressEvent) {
   const { loaded, total } = e

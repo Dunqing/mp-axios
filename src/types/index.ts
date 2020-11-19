@@ -37,11 +37,19 @@ export interface AxiosRequestConfig {
   onDownloadProgress?: (e: ProgressEvent) => void
   // 监听上传
   onUploadProgress?: (e: ProgressEvent) => void
+  // 校验validateStatus
   validateStatus?: (status: number) => boolean
+  // HTTP协议中的 Authorization
+  auth?: AxiosAuthBasic
   transformRequest?: AxiosTransform | AxiosTransform[]
   transformResponse?: AxiosTransform | AxiosTransform[]
   CancelToken?: CancelTokenInstance
   [propName: string]: any
+}
+
+interface AxiosAuthBasic {
+  username: string
+  password: string
 }
 
 export interface AxiosResponse<T = any> {

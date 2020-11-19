@@ -38,6 +38,16 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
       headers[xsrfHeaderName ?? ''] = xsrfValue
     }
 
+    if (
+      typeof config.auth !== 'undefined' &&
+      typeof config.auth.password === 'string' &&
+      typeof config.auth.username === 'string'
+    ) {
+      headers.Authorization = `Basic ${btoa(
+        config.auth.username + ':' + config.auth.password
+      )}`
+    }
+
     Object.keys(headers).forEach(name => {
       if (
         name.toLowerCase() === 'content-type' &&
