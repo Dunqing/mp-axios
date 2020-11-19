@@ -22,7 +22,9 @@ export type Method = keyof typeof RequestMethod
 
 export type AxiosTransform = (data: any, headers?: any) => any
 
+export type ParamsSerialize = (params: any) => string
 export interface AxiosRequestConfig {
+  baseUrl?: string
   url?: string
   method?: Method
   data?: any
@@ -33,6 +35,7 @@ export interface AxiosRequestConfig {
   withCredentials?: boolean
   xsrfHeaderName?: string
   xsrfCookieName?: string
+  paramsSerialize?: ParamsSerialize
   // 监听下载
   onDownloadProgress?: (e: ProgressEvent) => void
   // 监听上传

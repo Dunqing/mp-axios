@@ -1,4 +1,5 @@
-import { isDate, isObject } from './util'
+import { ParamsSerialize } from '../types'
+import { isDate, isFunction, isObject, isURLSearchParams } from './util'
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -11,36 +12,49 @@ function encode(val: string): string {
     .replace(/%5D/gi, ']')
 }
 
-export default function buildUrl(url: string, params?: any): string {
+export default function buildUrl(
+  url: string,
+  params?: any,
+  paramSerialize?: ParamsSerialize
+): string {
   if (typeof params === 'undefined') {
     return url
   }
-  const parts: string[] = []
 
-  Object.keys(params).forEach(key => {
-    const val = params[key]
-    if (val === null || val === undefined) {
-      return
-    }
-    let values = []
-    if (Array.isArray(val)) {
-      values = val
-      key += '[]'
-    } else {
-      values = [val]
-    }
+  let serializedParams = ''
 
-    values.forEach(value => {
-      if (isDate(value)) {
-        value = value.toISOString()
-      } else if (isObject(value)) {
-        value = JSON.stringify(value)
+  if (isFunction(paramSerialize)) {
+    serializedParams = paramSerialize(params)
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString()
+  } else {
+    const parts: string[] = []
+
+    Object.keys(params).forEach(key => {
+      const val = params[key]
+      if (val === null || val === undefined) {
+        return
       }
-      parts.push(`${encode(key)}=${encode(value)}`)
-    })
-  })
+      let values = []
+      if (Array.isArray(val)) {
+        values = val
+        key += '[]'
+      } else {
+        values = [val]
+      }
 
-  const serializedParams = parts.join('&')
+      values.forEach(value => {
+        if (isDate(value)) {
+          value = value.toISOString()
+        } else if (isObject(value)) {
+          value = JSON.stringify(value)
+        }
+        parts.push(`${encode(key)}=${encode(value)}`)
+      })
+      serializedParams = parts.join('&')
+    })
+  }
+
   if (typeof serializedParams === 'string') {
     const markIndex = url.indexOf('#')
     if (markIndex !== -1) {

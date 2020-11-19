@@ -1,5 +1,6 @@
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+import qs from 'qs'
 import axios, { AxiosResponse } from '../../src/index'
 
 axios({
@@ -23,8 +24,10 @@ axios({
   withCredentials: true,
   params: {
     a: 1,
-    b: [1, 2, 3]
-  }
+    b: 2,
+    c: [1, 2, 3],
+    d: { b: 1, d: 2, c: [1, 2, 3]}
+  },
 }).then(res => {
   console.log('csrf', res)
 })
@@ -43,6 +46,52 @@ axios({
   console.log(err, 'validate status')
 })
 
+axios({
+  url: '/more/serializer',
+  method: 'get',
+  params: {
+    a: 1,
+    b: 2,
+    c: [1, 2, 3],
+    d: { b: 1, d: 2, c: [1, 2, 3]}
+  },
+  validateStatus(status) {
+    return status !== 200
+  }
+}).catch(err => {
+  console.log(err, 'validate status')
+})
+
+axios({
+  url: '/more/serializer',
+  method: 'get',
+  params: new URLSearchParams([['a', 'b'], ['b', 'c'], ['d', 'e']]),
+  validateStatus(status) {
+    return status !== 200
+  }
+}).catch(err => {
+  console.log(err, 'validate status')
+})
+
+axios({
+  url: '/more/serializer',
+  method: 'get',
+  params: {
+    a: 1,
+    b: 2,
+    c: [1, 2, 3],
+    d: { a: 1, b: 2, c: [1, 2, 3] }
+  },
+  paramsSerialize: (params) => {
+    return qs.stringify(params)
+  },
+  validateStatus(status) {
+    return status !== 200
+  }
+}).catch(err => {
+  console.log(err, 'validate status')
+})
+
 
 function calculationProgress(e: ProgressEvent) {
   const { loaded, total } = e
@@ -51,6 +100,7 @@ function calculationProgress(e: ProgressEvent) {
 
 const instance = axios.create({
   timeout: 0,
+  baseUrl: 'http://127.0.0.1:8088',
   onDownloadProgress(e) {
     nprogress.set(calculationProgress(e))
   },

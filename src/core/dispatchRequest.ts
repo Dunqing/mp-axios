@@ -1,6 +1,7 @@
 import { flattenHeaders } from '../helpers/header'
 import transform from '../helpers/transform'
 import buildUrl from '../helpers/url'
+import { combineUrl, isAbsoluteUrl } from '../helpers/util'
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
 import xhr from './xhr'
 
@@ -40,8 +41,14 @@ function processConfig(config: AxiosRequestConfig): void {
  * @param config
  */
 function transformURL(config: AxiosRequestConfig): string {
-  const { url, params } = config
-  return buildUrl(url!, params)
+  let { baseUrl, url, params, paramsSerialize } = config
+  console.log(url, !isAbsoluteUrl(url!))
+  if (typeof baseUrl === 'string' && !isAbsoluteUrl(url!)) {
+    url = combineUrl(baseUrl, url)
+    console.log('url: ', url)
+  }
+
+  return buildUrl(url!, params, paramsSerialize)
 }
 
 /**

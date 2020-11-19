@@ -26,38 +26,43 @@ export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
     let request: XMLHttpRequest | null = new XMLHttpRequest()
     request.open(method.toUpperCase(), url!, true)
 
-    // csrf must
-    const xsrfValue =
-      typeof withCredentials === 'boolean' ||
-      (isUrlSameOrigin(url!) && typeof xsrfCookieName !== 'undefined')
-        ? read(xsrfCookieName ?? '')
-        : null
+    // 处理headers相关的
+    function processHeaders(): void {
+      // csrf must
+      const xsrfValue =
+        typeof withCredentials === 'boolean' ||
+        (isUrlSameOrigin(url!) && typeof xsrfCookieName !== 'undefined')
+          ? read(xsrfCookieName ?? '')
+          : null
 
-    // add xsrf-token header
-    if (typeof xsrfValue === 'string') {
-      headers[xsrfHeaderName ?? ''] = xsrfValue
-    }
-
-    if (
-      typeof config.auth !== 'undefined' &&
-      typeof config.auth.password === 'string' &&
-      typeof config.auth.username === 'string'
-    ) {
-      headers.Authorization = `Basic ${btoa(
-        config.auth.username + ':' + config.auth.password
-      )}`
-    }
-
-    Object.keys(headers).forEach(name => {
-      if (
-        name.toLowerCase() === 'content-type' &&
-        (isFormData(data) || data === null)
-      ) {
-        Reflect.deleteProperty(headers, name)
-      } else {
-        request!.setRequestHeader(name, headers[name])
+      // add xsrf-token header
+      if (typeof xsrfValue === 'string') {
+        headers[xsrfHeaderName ?? ''] = xsrfValue
       }
-    })
+
+      if (
+        typeof config.auth !== 'undefined' &&
+        typeof config.auth.password === 'string' &&
+        typeof config.auth.username === 'string'
+      ) {
+        headers.Authorization = `Basic ${btoa(
+          config.auth.username + ':' + config.auth.password
+        )}`
+      }
+
+      Object.keys(headers).forEach(name => {
+        if (
+          name.toLowerCase() === 'content-type' &&
+          (isFormData(data) || data === null)
+        ) {
+          Reflect.deleteProperty(headers, name)
+        } else {
+          request!.setRequestHeader(name, headers[name])
+        }
+      })
+    }
+
+    processHeaders()
 
     if (typeof config.responseType === 'string') {
       request.responseType = config.responseType

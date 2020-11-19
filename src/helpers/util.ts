@@ -14,6 +14,21 @@ export function isFunction(val: any): val is Function {
   return toString.call(val) === '[object Function]'
 }
 
+export function isURLSearchParams(val: any): val is URLSearchParams {
+  return typeof val !== 'undefined' && val instanceof URLSearchParams
+}
+
+export function isAbsoluteUrl(url: string): boolean {
+  // eslint-disable-next-line no-useless-escape
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+}
+
+export function combineUrl(baseUrl: string, relativeUrl?: string): string {
+  return typeof relativeUrl !== 'undefined'
+    ? baseUrl.replace(/\/+$/, '') + '/' + relativeUrl.replace(/^\/+/g, '')
+    : baseUrl
+}
+
 export function extend<T extends Object, U extends Object>(
   to: T,
   from: U,
