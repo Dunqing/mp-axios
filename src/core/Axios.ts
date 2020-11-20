@@ -1,4 +1,7 @@
+import defaults from '../defaults'
+import { transformURL } from '../helpers/url'
 import {
+  Axios as AxiosInstance,
   AxiosPromise,
   AxiosRequestConfig,
   AxiosResponse,
@@ -20,19 +23,22 @@ interface PromiseChain<T> {
   rejected?: RejectedFn
 }
 
-export default class Axios {
+export default class Axios implements AxiosInstance {
   interceptors: AxiosInterceptors
   defaults: AxiosRequestConfig
 
   constructor(config: AxiosRequestConfig) {
-    this.defaults = config
+    this.defaults = mergeConfig(defaults, config)
     this.interceptors = {
       request: new InterceptorManager<AxiosRequestConfig>(),
       response: new InterceptorManager<AxiosResponse>()
     }
   }
 
-  async request(url: string, config?: AxiosRequestConfig): AxiosPromise {
+  async request(
+    url: string | AxiosRequestConfig,
+    config?: AxiosRequestConfig
+  ): AxiosPromise {
     if (typeof url === 'string') {
       if (typeof config === 'undefined') {
         config = {}
@@ -70,7 +76,6 @@ export default class Axios {
   }
 
   async get(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    console.log(config, 'hello')
     return await this._requestMethodWithoutData(url, RequestMethod.get, config)
   }
 
@@ -117,6 +122,11 @@ export default class Axios {
       RequestMethod.delete,
       config
     )
+  }
+
+  getUri(config: AxiosRequestConfig): string {
+    config = mergeConfig(config)
+    return transformURL(config)
   }
 
   private async _requestMethodWithoutData(

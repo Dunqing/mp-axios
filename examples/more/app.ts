@@ -1,7 +1,7 @@
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 import qs from 'qs'
-import axios, { AxiosResponse } from '../../src/index'
+import axios, { AxiosRequestConfig, AxiosResponse } from '../../src/index'
 
 axios({
   method: 'post',
@@ -100,7 +100,7 @@ function calculationProgress(e: ProgressEvent) {
 
 const instance = axios.create({
   timeout: 0,
-  baseUrl: 'http://127.0.0.1:8088',
+  baseURL: 'http://127.0.0.1:8088',
   onDownloadProgress(e) {
     nprogress.set(calculationProgress(e))
   },
@@ -169,3 +169,55 @@ function html() {
   })
 }
 html()
+
+
+console.log('all spread getUri')
+
+const bestAxios = new axios.Axios({
+  baseURL: 'http://127.0.0.1:8080',
+  timeout: 4000,
+})
+
+bestAxios.interceptors.request.use(function(config) {
+  nprogress.start()
+  return config
+})
+
+bestAxios.interceptors.response.use(function(response) {
+  nprogress.done()
+  return response
+})
+
+const config: AxiosRequestConfig = {
+  url: '/more/serializer',
+  method: 'post',
+  auth: {
+    username: 'admin',
+    password: '123456'
+  },
+  data: qs.stringify({
+    a: [1, 2, 3, 5],
+    b: { a: 1, b: 2 }
+  }),
+}
+
+function p1() {
+  return bestAxios.request(config)
+}
+function p2() {
+  return bestAxios.request(config)
+}
+function p3() {
+  return bestAxios.request(config)
+}
+
+axios.all([p1(), p2(), p3()]).then(axios.spread(function (r1, r2, r3) {
+  console.log('r1, r2, r3: ', r1, r2, r3);
+}))
+
+axios.all([p1(), p2(), p3()]).then(([r11, r22, r33]) => {
+  console.log('r11, r22, r33: ', r11, r22, r33);
+})
+
+const url = bestAxios.getUri(config)
+console.log('getUri: ', url);

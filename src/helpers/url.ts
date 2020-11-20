@@ -1,5 +1,12 @@
-import { ParamsSerialize } from '../types'
-import { isDate, isFunction, isObject, isURLSearchParams } from './util'
+import { AxiosRequestConfig, ParamsSerialize } from '../types'
+import {
+  combineURL,
+  isAbsoluteURL,
+  isDate,
+  isFunction,
+  isObject,
+  isURLSearchParams
+} from './util'
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -12,7 +19,7 @@ function encode(val: string): string {
     .replace(/%5D/gi, ']')
 }
 
-export default function buildUrl(
+export default function buildURL(
   url: string,
   params?: any,
   paramSerialize?: ParamsSerialize
@@ -23,6 +30,7 @@ export default function buildUrl(
 
   let serializedParams = ''
 
+  // 优先使用传用配置项的paramSerialize
   if (isFunction(paramSerialize)) {
     serializedParams = paramSerialize(params)
   } else if (isURLSearchParams(params)) {
@@ -63,4 +71,17 @@ export default function buildUrl(
     url += (!url.includes('?') ? '?' : '&') + serializedParams
   }
   return url
+}
+
+/**
+ * 转换 url地址
+ * @param config
+ */
+export function transformURL(config: AxiosRequestConfig): string {
+  let { baseURL, url, params, paramsSerialize } = config
+  if (typeof baseURL === 'string' && !isAbsoluteURL(url!)) {
+    url = combineURL(baseURL, url)
+  }
+
+  return buildURL(url!, params, paramsSerialize)
 }

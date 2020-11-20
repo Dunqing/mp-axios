@@ -18,11 +18,13 @@ function normalizeHeaderName(headers: any, normalizedName: string): void {
 
 export default function processHeader(headers: any, data: any): any {
   normalizeHeaderName(headers, 'Content-Type')
+  // ! 如果data为对象 并且有设置Content-Type时。则会更改用户设置的 application/json;charset=utf-8
   if (isObject(data)) {
     if (
       typeof headers !== 'undefined' &&
       typeof headers['Content-Type'] === 'string'
     ) {
+      // 默认 application/json;charset=utf-8
       headers['Content-Type'] = 'application/json;charset=utf-8'
     }
   }

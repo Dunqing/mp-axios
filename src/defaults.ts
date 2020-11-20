@@ -1,9 +1,10 @@
-import { transformRequest, transformResponse } from '../helpers/data'
-import processHeader from '../helpers/header'
-import { AxiosRequestConfig } from '../types'
+import { transformRequest, transformResponse } from './helpers/data'
+import processHeader from './helpers/header'
+import { AxiosRequestConfig } from './types'
 
 const config: AxiosRequestConfig = {
-  timeout: 3000,
+  // 默认不超时
+  timeout: 0,
   xsrfCookieName: 'X-TOKEN',
   xsrfHeaderName: 'X-TOKEN',
   transformRequest: [
@@ -21,14 +22,11 @@ const config: AxiosRequestConfig = {
     }
   ],
   headers: {
-    common: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    common: {}
   }
 }
 
 const noDataMethodKey = ['delete', 'get', 'head', 'options']
-
 noDataMethodKey.forEach(method => {
   config.headers[method] = {
     Accept: 'application/json, text/plain, */*'
@@ -36,7 +34,6 @@ noDataMethodKey.forEach(method => {
 })
 
 const dataMethodKey = ['patch', 'post', 'put']
-
 dataMethodKey.forEach(method => {
   config.headers[method] = {
     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'

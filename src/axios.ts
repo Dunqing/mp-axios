@@ -1,8 +1,8 @@
 import { isCancel } from './cancel/Cancel'
 import { CancelToken } from './cancel/CancelToken'
 import Axios from './core/Axios'
-import defaults from './core/defaults'
 import mergeConfig from './core/mergeConfig'
+import defaults from './defaults'
 import { extend } from './helpers/util'
 import { AxiosRequestConfig, AxiosStatic } from './types'
 
@@ -22,5 +22,15 @@ axios.create = config => {
 
 axios.CancelToken = CancelToken
 axios.isCancel = isCancel
+axios.Axios = Axios
+axios.all = async function<T>(promise: Array<T | Promise<T>>): Promise<T[]> {
+  return await Promise.all(promise)
+}
+
+axios.spread = function<T, R>(callback: (...args: T[]) => R): (arr: T[]) => R {
+  return function wrap(arr: T[]) {
+    return callback.apply(null, arr)
+  }
+}
 
 export default axios

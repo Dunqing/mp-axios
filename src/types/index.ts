@@ -24,7 +24,7 @@ export type AxiosTransform = (data: any, headers?: any) => any
 
 export type ParamsSerialize = (params: any) => string
 export interface AxiosRequestConfig {
-  baseUrl?: string
+  baseURL?: string
   url?: string
   method?: Method
   data?: any
@@ -82,7 +82,7 @@ export interface AxiosInterceptors {
 export interface Axios {
   defaults: AxiosRequestConfig
   interceptors: AxiosInterceptors
-  request: <T = any>(config: AxiosRequestConfig) => AxiosPromise<T>
+  request: AxiosRequestFunction
   get: <T = any>(url: string, config?: AxiosRequestConfig) => AxiosPromise<T>
   put: <T = any>(
     url: string,
@@ -105,6 +105,7 @@ export interface Axios {
     data?: any,
     config?: AxiosRequestConfig
   ) => AxiosPromise<T>
+  getUri: (config: AxiosRequestConfig) => string
 }
 
 export type RejectedFn = (error: any) => any
@@ -115,14 +116,21 @@ export interface AxiosInterceptorsManager<T> {
   eject: (id: number) => boolean
 }
 
-export interface AxiosInstance extends Axios {
-  <T = any>(config: AxiosRequestConfig): AxiosPromise<T>
+interface AxiosRequestFunction {
   <T = any>(url: string, config?: any): AxiosPromise<T>
+  <T = any>(config: AxiosRequestConfig): AxiosPromise<T>
 }
+
+export interface AxiosInstance extends Axios, AxiosRequestFunction {}
+
+export type AxiosClassStatic = new (config: AxiosRequestConfig) => Axios
 
 export interface AxiosStatic extends AxiosInstance {
   CancelToken: CancelTokenStatic
   Cancel: Cancel
   isCancel: (value: any) => boolean
   create: (config?: AxiosRequestConfig) => AxiosInstance
+  all: <T>(promise: Array<T | Promise<T>>) => Promise<T[]>
+  spread: <T, R>(callback: (...args: T[]) => R) => (arr: T[]) => R
+  Axios: AxiosClassStatic
 }
