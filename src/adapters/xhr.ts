@@ -1,3 +1,4 @@
+import settled from '../core/settled'
 import { read } from '../helpers/cookie'
 import { createError } from '../helpers/error'
 import { parseHeaders } from '../helpers/header'
@@ -5,7 +6,6 @@ import isUrlSameOrigin from '../helpers/isUrlSameOrigin'
 import { isFormData, isFunction } from '../helpers/util'
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
 import { CancelInstance } from '../types/CancelToken'
-import settled from './settled'
 
 export default async function xhr(config: AxiosRequestConfig): AxiosPromise {
   return await new Promise((resolve, reject) => {

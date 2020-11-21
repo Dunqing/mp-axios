@@ -1,6 +1,14 @@
+import xhr from './adapters/xhr'
 import { transformRequest, transformResponse } from './helpers/data'
 import processHeader from './helpers/header'
-import { AxiosRequestConfig } from './types'
+import { AxiosAdapter, AxiosRequestConfig } from './types'
+
+const selectAdapter = function(): AxiosAdapter | undefined {
+  if (typeof XMLHttpRequest !== 'undefined') {
+    return xhr
+  }
+  throw new Error('没有适合你环境的适配器！请自己实现一个进行适配！')
+}
 
 const config: AxiosRequestConfig = {
   // 默认不超时
@@ -13,6 +21,7 @@ const config: AxiosRequestConfig = {
       return transformRequest(data)
     }
   ],
+  adapter: selectAdapter(),
   validateStatus(status: number) {
     return status >= 200 && status <= 300
   },

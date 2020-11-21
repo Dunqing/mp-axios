@@ -1,8 +1,9 @@
+import defaults from '../defaults'
 import { flattenHeaders } from '../helpers/header'
 import transform from '../helpers/transform'
 import { transformURL } from '../helpers/url'
+import { isFunction } from '../helpers/util'
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
-import xhr from './xhr'
 
 /**
  * 触发请求
@@ -12,9 +13,10 @@ export default async function dispatchRequest(
   config: AxiosRequestConfig
 ): AxiosPromise {
   throwIfCancellationRequested(config)
-
   processConfig(config)
-  const res = await xhr(config)
+  // 避免给adapter设置不可用的适配器
+  const adapter = isFunction(config.adapter) ? config.adapter : defaults.adapter
+  const res = await adapter!(config)
   return transformResponseData(res)
 }
 

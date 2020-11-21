@@ -20,7 +20,8 @@
   },
   "include": [
     "test/**/*",
-    "src/**/*"
+    "src/**/*",
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "examples",

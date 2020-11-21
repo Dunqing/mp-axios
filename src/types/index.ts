@@ -16,13 +16,19 @@ export enum RequestMethod {
   HEAD = 'HEAD',
   head = 'head',
   patch = 'patch',
-  PATCH = 'PATCH'
+  PATCH = 'PATCH',
+  CONNECT = 'CONNECT',
+  connect = 'connect',
+  TRACE = 'TRACE',
+  trace = 'trace'
 }
 export type Method = keyof typeof RequestMethod
 
 export type AxiosTransform = (data: any, headers?: any) => any
 
 export type ParamsSerialize = (params: any) => string
+
+export type AxiosAdapter = (config: AxiosRequestConfig) => AxiosPromise
 export interface AxiosRequestConfig {
   baseURL?: string
   url?: string
@@ -32,6 +38,7 @@ export interface AxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  adapter?: AxiosAdapter
   withCredentials?: boolean
   xsrfHeaderName?: string
   xsrfCookieName?: string
