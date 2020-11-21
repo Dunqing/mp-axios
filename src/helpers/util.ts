@@ -63,7 +63,7 @@ export function deepMerge(...rest: any[]): any {
         if (isObject(result[key])) {
           result[key] = deepMerge(result[key], current)
         } else {
-          result[key] = deepMerge(current)
+          result[key] = current
         }
       } else if (Array.isArray(current)) {
         if (Array.isArray(result[key])) {
@@ -71,8 +71,9 @@ export function deepMerge(...rest: any[]): any {
         } else {
           result[key] = current
         }
+      } else {
+        result[key] = current
       }
-      result[key] = obj[key]
     })
   })
   return result

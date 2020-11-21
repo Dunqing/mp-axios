@@ -19,14 +19,13 @@
     ],
   },
   "include": [
-    "test",
-    "src"
+    "test/**/*",
+    "src/**/*"
   ],
   "exclude": [
     "examples",
     "dist",
     "tools",
-    "test",
     ".history",
     "node_modules",
   ]
