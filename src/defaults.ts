@@ -1,3 +1,4 @@
+import miniprogram from './adapters/miniprogram'
 import xhr from './adapters/xhr'
 import { transformRequest, transformResponse } from './helpers/data'
 import processHeader from './helpers/header'
@@ -6,6 +7,8 @@ import { AxiosAdapter, AxiosRequestConfig } from './types'
 const selectAdapter = function(): AxiosAdapter | undefined {
   if (typeof XMLHttpRequest !== 'undefined') {
     return xhr
+  } else if (typeof uni !== 'undefined' || typeof wx !== 'undefined') {
+    return miniprogram as AxiosAdapter
   }
   throw new Error('没有适合你环境的适配器！请自己实现一个进行适配！')
 }
@@ -31,15 +34,15 @@ const config: AxiosRequestConfig = {
     }
   ],
   headers: {
-    common: {}
+    common: {
+      Accept: 'application/json, text/plain, */*'
+    }
   }
 }
 
 const noDataMethodKey = ['delete', 'get', 'head', 'options']
 noDataMethodKey.forEach(method => {
-  config.headers[method] = {
-    Accept: 'application/json, text/plain, */*'
-  }
+  config.headers[method] = {}
 })
 
 const dataMethodKey = ['patch', 'post', 'put']

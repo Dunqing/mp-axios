@@ -1,3 +1,5 @@
+import { AxiosPromise, AxiosRequestConfig } from '../types/index'
+
 let MPRequest: any = null
 
 if (typeof uni !== 'undefined' && typeof uni.request !== 'undefined') {
@@ -6,21 +8,48 @@ if (typeof uni !== 'undefined' && typeof uni.request !== 'undefined') {
   MPRequest = uni.request
 }
 
-type AxiosRequestConfig = any
+type MPRequestConfigKeys =
+  | 'baseURL'
+  | 'url'
+  | 'method'
+  | 'data'
+  | 'params'
+  | 'headers'
+  | 'timeout'
+  | 'adapter'
+  | 'paramsSerialize'
+  | 'transformRequest'
+  | 'transformResponse'
+  | 'validateStatus'
+
+interface RequestConfig {
+  responseType: 'text' | 'arrayBuffer'
+  dataType: 'json' | any
+  enableHttp2: boolean
+  enableQuic: boolean
+  enableCache: boolean
+}
+
+export type MPRequestConfig = Pick<AxiosRequestConfig, MPRequestConfigKeys> &
+  RequestConfig
 
 export interface AxiosResponse<T = any> {
   data: T
   status: number
   statusText: string
-  config: AxiosRequestConfig
+  config: MPRequestConfig
   headers: any
   request: any
+  profile: {
+    [propName: string]: any
+  }
 }
 
 function settled(resolve: any, reject: any, response: AxiosResponse): void {
   if (response.config.validateStatus?.(response.status) === true) {
     resolve(response)
   } else {
+    console.log('error', response)
     reject(
       createError(
         response.statusText,
@@ -35,7 +64,7 @@ function settled(resolve: any, reject: any, response: AxiosResponse): void {
 
 export function createError(
   message: string,
-  config: AxiosRequestConfig,
+  config: MPRequestConfig,
   code?: string | null,
   request?: any,
   response?: AxiosResponse,
@@ -54,7 +83,7 @@ export function createError(
 
 export class AxiosError extends Error {
   constructor(
-    public config: AxiosRequestConfig,
+    public config: MPRequestConfig,
     public isAxiosError?: boolean,
     public code?: string | null,
     public request?: any,
@@ -65,9 +94,8 @@ export class AxiosError extends Error {
   }
 }
 
-export default async function(config: AxiosRequestConfig): Promise<any> {
+export default async function(config: MPRequestConfig): AxiosPromise {
   return await new Promise((resolve, reject) => {
-    console.log('config: ', config)
     const request = MPRequest({
       ...config,
       complete(res: any) {
