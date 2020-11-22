@@ -33,6 +33,6 @@ export default {
     }),
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
-    babel({ babelHelpers: 'bundled' }),
+    babel({ babelHelpers: 'runtime' }),
   ],
 }
