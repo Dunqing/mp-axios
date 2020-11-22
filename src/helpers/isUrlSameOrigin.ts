@@ -1,3 +1,5 @@
+import { isBrowserEnv } from './util'
+
 interface OriginParams {
   href: string
   host: string
@@ -11,7 +13,21 @@ interface HandleUrlSameOrigin {
   resolveUrl: (requestUrl: string) => OriginParams
 }
 
-function handleUrlSameOrigin(): HandleUrlSameOrigin {
+const handleUrlSameOrigin = (function(): () => HandleUrlSameOrigin {
+  if (!isBrowserEnv()) {
+    return () => ({
+      isSameOrigin: () => true,
+      resolveUrl: () => {
+        return {
+          href: '',
+          host: '',
+          protocol: '',
+          port: ''
+        }
+      }
+    })
+  }
+
   const element = document.createElement('a')
 
   /**
@@ -38,8 +54,11 @@ function handleUrlSameOrigin(): HandleUrlSameOrigin {
     return origin.host === request.host && origin.protocol === request.protocol
   }
 
-  return { resolveUrl, isSameOrigin }
-}
+  return () => ({
+    resolveUrl,
+    isSameOrigin
+  })
+})()
 
 const { isSameOrigin, resolveUrl } = handleUrlSameOrigin()
 

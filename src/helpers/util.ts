@@ -23,6 +23,17 @@ export function isAbsoluteURL(url: string): boolean {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
 }
 
+export function isBrowserEnv(): boolean {
+  if (
+    typeof navigator !== 'undefined' &&
+    typeof XMLHttpRequest !== 'undefined'
+  ) {
+    return true
+  } else {
+    return false
+  }
+}
+
 export function combineURL(baseURL: string, relativeURL?: string): string {
   return typeof relativeURL !== 'undefined'
     ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/g, '')
