@@ -1,6 +1,6 @@
 {
   "name": "@dengqing/mp-axios",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "支持微信小程序、uniapp的axios库",
   "keywords": [
     "axios",
