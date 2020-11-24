@@ -49,7 +49,6 @@ function settled(resolve: any, reject: any, response: AxiosResponse): void {
   if (response.config.validateStatus?.(response.status) === true) {
     resolve(response)
   } else {
-    console.log('error', response)
     reject(
       createError(
         response.statusText,

@@ -1,0 +1,9 @@
+.history
+.rpt2_cache
+coverage/
+examples/
+src/
+test/
+tools/
+dist/lib/
+dist/types/

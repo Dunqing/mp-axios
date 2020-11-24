@@ -15,6 +15,8 @@ function defaultStrategy(val1: any, val2: any): any {
 function formVal2Strategy(val1: any, val2: any): any {
   if (typeof val2 !== 'undefined') {
     return val2
+  } else {
+    return val1
   }
 }
 
