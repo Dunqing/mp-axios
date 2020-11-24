@@ -7,3 +7,5 @@ test/
 tools/
 dist/lib/
 dist/types/
+node_modules/
+uploads/
